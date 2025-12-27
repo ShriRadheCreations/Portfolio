@@ -1,390 +1,939 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shri Radhe Portfolio</title>
+<meta charset="UTF-8">
+<title>Camera Click Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-  <style>
-    /* ========== GLOBAL THEME ========== */
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #000428 0%, #004e92 100%);
-      color: #fff;
-      font-family: "Press Start 2P", cursive, monospace;
-      overflow-x: hidden;
-      min-height: 100vh;
-      position: relative;
-    }
+<style>
+body {
+  background: black;
+  overflow: hidden;
+  color: white;
+  font-family: Poppins, sans-serif;
+}
 
-    /* Glowing starry background */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(white 1px, transparent 1px);
-      background-size: 3px 3px;
-      opacity: 0.08;
-      animation: twinkle 20s infinite linear;
-      z-index: 0;
-    }
+/* VIDEO BACKGROUND */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  transition: filter 0.5s ease;
+  will-change: transform;
+}
 
-    @keyframes twinkle {
-      from { transform: translateY(0); }
-      to { transform: translateY(-200px); }
-    }
+.video-background video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: blur(3px) grayscale(70%);
+  will-change: transform;
+  backface-visibility: hidden;
+}
 
-    /* ========== NAVBAR ========== */
-    .navbar {
-      background-color: rgba(0, 0, 0, 0.85);
-      border-bottom: 2px solid #44d9ff;
-      box-shadow: 0 0 15px #44d9ff55;
-      backdrop-filter: blur(4px);
-      padding: 10px 20px;
-    }
+.video-background.blur {
+  filter: blur(15px);
+}
 
-    .navbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #8feeff !important;
-      text-shadow: 0 0 8px #8feeff;
-      letter-spacing: 2px;
-      font-size: 14px;
-    }
+/* BUTTON */
+.action-btn {
+  padding: 16px 50px;
+  font-size: 22px;
+  border-radius: 50px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  transition: 0.4s;
+}
 
-    .navbar-brand img {
-      height: 40px;
-      width: 40px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px #8feeffaa;
-      object-fit: contain;
-    }
+.action-btn:hover {
+  background: white;
+  color: black;
+  transform: scale(1.1);
+}
 
-    .nav-link {
-      color: #fff !important;
-      transition: color 0.3s, text-shadow 0.3s;
-      font-size: 12px;
-    }
+/* CAMERA */
+.camera {
+  position: fixed;
+  top: 50%;
+  left: -300px;
+  transform: translateY(-50%) scale(0.5);
+  opacity: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
 
-    .nav-link:hover {
-      color: #ffe066 !important;
-      text-shadow: 0 0 6px #ffe066;
-    }
+.camera img {
+  width: clamp(200px, 25vw, 400px);
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
 
-    /* ========== HERO SECTION (LOGO + TEXT) ========== */
-    .hero-section {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      min-height: 90vh;
-      padding-top: 120px;
-      gap: 2rem;
-      position: relative;
-      z-index: 1;
-      overflow: hidden;
-    }
+.camera.active {
+  animation:
+    cameraMove 1s ease forwards,
+    cameraClick 0.3s ease 1s forwards;
+}
 
-    /* === Background Image === */
-    .hero-section::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url("bg.png") center/cover no-repeat;
-      filter: blur(5px) brightness(0.5);
-      z-index: -1;
-      transform: scale(1.05);
-      animation: subtleMove 30s infinite alternate ease-in-out;
-    }
+.action-text {
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  font-weight: bold;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(255, 255, 255, 0.5),
+    0 0 30px rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  animation: actionPulse 1s ease-in-out infinite;
+  white-space: nowrap;
+}
 
-    @keyframes subtleMove {
-      0% { transform: scale(1.05) translateY(0); }
-      50% { transform: scale(1.08) translateY(-10px); }
-      100% { transform: scale(1.05) translateY(0); }
-    }
+@keyframes actionPulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    text-shadow: 
+      0 0 20px rgba(255, 255, 255, 1),
+      0 0 40px rgba(255, 255, 255, 0.8),
+      0 0 60px rgba(255, 255, 255, 0.5);
+  }
+}
 
-    /* ===== LOGO FIXED STYLE ===== */
-    .main-logo {
-      width: 420px;
-      height: auto;
-      border-radius: 0;
-      margin-bottom: 15px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 25px rgba(255, 204, 0, 0.8))
-              drop-shadow(0 0 50px rgba(255, 153, 0, 0.4));
-    }
+@keyframes cameraMove {
+  to {
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
 
-    .welcome-text {
-      font-size: 16px;
-      color: #ffe066;
-      text-shadow: 0 0 10px #ffe066aa;
-      margin-bottom: 40px;
-    }
+@keyframes cameraClick {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(0.85); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
 
-    /* ========== NEW BUTTON STYLES (From Uiverse.io by rubyreapergaming) ========== */
-    .btn {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 24rem;
-      height: 5rem;
-      overflow: hidden;
-      background-size: 300% 300%;
-      backdrop-filter: blur(1rem);
-      border-radius: 10px;
-      transition: 0.5s;
-      animation: gradient_301 5s ease infinite;
-      border: double 4px transparent;
-      background-image: linear-gradient(#161a25, #161a25),
-        linear-gradient(
-          137.48deg,
-          #44d9ff 10%,
-          #8feeff 45%,
-          #004e92 67%,
-          #161a25 87%
-        );
-      background-origin: border-box;
-      background-clip: content-box, border-box;
-      font-family: "Orbitron", sans-serif;
-      cursor: pointer;
-    }
+/* FLASH */
+.flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+}
 
-    #container-stars {
-      position: absolute;
-      z-index: -1;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      transition: 0.5s;
-      backdrop-filter: blur(1rem);
-      border-radius: 10px;
-    }
+.flash.active {
+  animation: flashEffect 0.4s ease forwards;
+}
 
-    strong {
-      z-index: 2;
-      font-family: "Orbitron", sans-serif;
-      font-size: 16px;
-      letter-spacing: 2px;
-      color: #ffffff;
-      text-shadow: 0 0 4px white;
-    }
+@keyframes flashEffect {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
 
-    #glow {
-      position: absolute;
-      display: flex;
-      width: 12rem;
-    }
+/* MOBILE */
+@media (max-width: 576px) {
+  .action-btn {
+    width: 100%;
+  }
+  .animated-btn-container {
+    transform: scale(0.8) !important;
+  }
+  .company-logo {
+    max-width: 200px !important;
+  }
+  .company-name {
+    font-size: 1.2rem !important;
+  }
+}
 
-    .circle {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      filter: blur(2rem);
-    }
+/* Company Logo */
+.company-logo {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+  animation: breatheGlow 3s ease-in-out infinite;
+  will-change: filter;
+}
 
-    .circle:nth-of-type(1) {
-      background: rgba(68, 217, 255, 0.636);
-      animation: orbit 8s linear infinite;
-    }
+@keyframes breatheGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.9))
+            drop-shadow(0 0 50px rgba(255, 255, 255, 0.6));
+  }
+}
 
-    .circle:nth-of-type(2) {
-      background: rgba(143, 238, 255, 0.704);
-      animation: orbit 10s linear infinite;
-    }
+/* Company Name */
+.company-name {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.3rem;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  text-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.7),
+    0 0 30px rgba(255, 255, 255, 0.5);
+  animation: textBreathe 3s ease-in-out infinite;
+  will-change: text-shadow;
+}
 
-    .btn:hover #container-stars {
-      z-index: 1;
-      background-color: #161a25;
-    }
+@keyframes textBreathe {
+  0%, 100% {
+    text-shadow: 
+      0 0 15px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    text-shadow: 
+      0 0 25px rgba(255, 255, 255, 1),
+      0 0 50px rgba(255, 255, 255, 0.8),
+      0 0 70px rgba(255, 255, 255, 0.5);
+  }
+}
 
-    .btn:hover {
-      transform: scale(1.1);
-    }
+/* Button Wrapper */
+.button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
 
-    .btn:active {
-      border: double 4px #004e92;
-      background-origin: border-box;
-      background-clip: content-box, border-box;
-      animation: none;
-    }
+.button-wrapper .animated-btn-container {
+  position: relative;
+}
 
-    .btn:active .circle {
-      background: #004e92;
-    }
+.button-wrapper .animated-btn-container::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  border-radius: 2rem;
+  z-index: -1;
+  opacity: 0.8;
+  animation: buttonGlowBreathe 3s ease-in-out infinite;
+}
 
-    @keyframes orbit {
-      from {
-        transform: rotate(0deg) translateX(100px) rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg) translateX(100px) rotate(-360deg);
-      }
-    }
+@keyframes buttonGlowBreathe {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
 
-    #stars {
-      position: relative;
-      background: transparent;
-      width: 200rem;
-      height: 200rem;
-    }
+/* Sound Control Button */
+.sound-control {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    #stars::after {
-      content: "";
-      position: absolute;
-      top: -10rem;
-      left: -100rem;
-      width: 100%;
-      height: 100%;
-      animation: animStarRotate 90s linear infinite;
-      background-image: radial-gradient(#ffffff 1px, transparent 1%);
-      background-size: 50px 50px;
-    }
+.sound-control:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
 
-    #stars::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -50%;
-      width: 170%;
-      height: 500%;
-      animation: animStar 60s linear infinite;
-      background-image: radial-gradient(#ffffff 1px, transparent 1%);
-      background-size: 50px 50px;
-      opacity: 0.5;
-    }
+.sound-control i {
+  font-size: 24px;
+  color: white;
+  transition: all 0.3s ease;
+}
 
-    @keyframes animStar {
-      from { transform: translateY(0); }
-      to { transform: translateY(-135rem); }
-    }
+.sound-control.muted {
+  background: rgba(139, 0, 0, 0.7); /* Dark red for muted state */
+  border-color: rgba(255, 100, 100, 0.5); /* Red-tinged border */
+}
 
-    @keyframes animStarRotate {
-      from { transform: rotate(360deg); }
-      to { transform: rotate(0); }
-    }
+.sound-control.muted:hover {
+  background: rgba(139, 0, 0, 0.9); /* Darker red on hover */
+}
 
-    @keyframes gradient_301 {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+.sound-control.muted i {
+  color: #ff6b6b; /* Red color for muted state */
+}
 
-    .coming-soon {
-      font-size: 12px;
-      color: #ffe066;
-      margin-top: 10px;
-      text-shadow: 0 0 8px #ffe066aa;
-    }
+/* Mobile Responsive */
+@media (max-width: 576px) {
+  .sound-control {
+    top: 15px;
+    left: 15px;
+    padding: 12px;
+  }
+  
+  .sound-control i {
+    font-size: 20px;
+  }
+}
 
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 10px;
-      color: #888;
-      margin-top: 40px;
-    }
-  </style>
+/* Animated Button Styles - From Uiverse.io by OMPRABHU8125 */
+.animated-btn-container {
+  position: relative;
+  width: 20rem;
+  height: 7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotateX(15deg);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.animated-btn-container:hover {
+  transform: rotateX(15deg) scale(1.1);
+}
+
+.animated-btn-container:active:not(:has(input:checked)) {
+  transform: rotateX(15deg) scale(0.98);
+}
+
+.button-toggle {
+  display: none;
+}
+
+.blur-background {
+  background: linear-gradient(
+    to bottom,
+    #1a1a1a,
+    #151515,
+    #121212,
+    #0f0f0f,
+    #0d0d0d,
+    #0a0a0a,
+    #080808,
+    #000000
+  );
+  height: 8rem;
+  width: 20rem;
+  border-radius: 1.5rem;
+  filter: blur(0.5rem);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.background-border-shadow {
+  background: linear-gradient(to bottom, #1a1a1a, #000000);
+  height: 6.8rem;
+  width: 19.6rem;
+  border-radius: 1.5rem;
+  position: relative;
+  z-index: 2;
+  margin: auto;
+  filter: blur(0.3rem);
+}
+
+.background-border {
+  background: #000000;
+  height: 6.4rem;
+  width: 19.6rem;
+  border-radius: 1.5rem;
+  position: absolute;
+  z-index: 3;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.background-base {
+  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+  height: 6.2rem;
+  width: 19.6rem;
+  border-radius: 1.5rem;
+  position: absolute;
+  z-index: 4;
+  top: -0.1rem;
+  filter: blur(0.1rem);
+}
+
+.button-base-shadow {
+  background: linear-gradient(to bottom, #1a1a1a, #333333);
+  height: 5.8rem;
+  width: 19rem;
+  border-radius: 1.5rem;
+  position: absolute;
+  z-index: 5;
+  filter: blur(0.1rem) brightness(1.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-style: preserve-3d;
+  transition: background 0.5s ease;
+}
+
+.button-base-black {
+  background: linear-gradient(to bottom, #1a1a1a, #000000 99% 100%);
+  height: 5.6rem;
+  width: 19rem;
+  border-radius: 1.5rem;
+  position: absolute;
+  z-index: 6;
+  filter: blur(0.1rem);
+  transform-origin: top center;
+  transform-style: preserve-3d;
+}
+
+.main-button {
+  background: linear-gradient(
+    to bottom,
+    #2a2a2a,
+    #252525,
+    #202020,
+    #1a1a1a,
+    #151515,
+    #101010,
+    #0a0a0a
+  );
+  height: 5.5rem;
+  width: 18.8rem;
+  border-radius: 1.5rem;
+  position: absolute;
+  z-index: 7;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+}
+
+.button-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.2rem;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #cccccc 0%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 100%;
+  transition: all 0.5s ease;
+}
+
+.status-text {
+  position: absolute;
+  font-size: 1.4rem;
+  font-weight: bold;
+  letter-spacing: 0.15rem;
+  color: #000000;
+  text-transform: uppercase;
+  opacity: 0;
+  z-index: 10;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.loading-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  height: auto;
+}
+
+.loading-text::after {
+  content: "...";
+  display: inline-block;
+  width: auto;
+  opacity: 1;
+}
+
+@keyframes goldenGlow {
+  0% {
+    background: linear-gradient(to bottom, #1a1a1a, #333333);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+  }
+  100% {
+    background: linear-gradient(to bottom, #ffffff, #e0e0e0);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 60px rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes normalGlow {
+  0% {
+    background: linear-gradient(to bottom, #ffffff, #e0e0e0);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 60px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    background: linear-gradient(to bottom, #1a1a1a, #333333);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+  }
+}
+
+@keyframes typeWriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 12rem;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes textGolden {
+  0% {
+    background: linear-gradient(to right, #cccccc 0%, #ffffff 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  100% {
+    background: linear-gradient(to right, #ffffff 0%, #f0f0f0 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  }
+}
+
+@keyframes textNormal {
+  0% {
+    background: linear-gradient(to right, #ffffff 0%, #f0f0f0 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  }
+  100% {
+    background: linear-gradient(to right, #cccccc 0%, #ffffff 100%);
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+@keyframes openFlap {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-120deg);
+  }
+}
+
+@keyframes closeFlap {
+  0% {
+    transform: rotateX(-120deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes showLoading {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hideLoading {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes showFinished {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeTextBack {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.button-toggle:checked ~ .animated-btn-container .button-text {
+  animation:
+    textGolden 0.3s ease forwards,
+    fadeOut 0.3s ease 0.3s forwards,
+    fadeTextBack 0.3s ease 4s forwards,
+    textNormal 0.3s ease 4.3s forwards;
+}
+
+.button-toggle:checked ~ .animated-btn-container .button-base-shadow {
+  animation:
+    goldenGlow 0.3s ease forwards,
+    normalGlow 0.3s ease 4s forwards;
+}
+
+.button-toggle:checked ~ .animated-btn-container .main-button,
+.button-toggle:checked ~ .animated-btn-container .button-base-black {
+  animation:
+    openFlap 0.5s ease 0.6s forwards,
+    closeFlap 0.5s ease 3.5s forwards;
+}
+
+.button-toggle:checked ~ .animated-btn-container .loading-text {
+  animation:
+    showLoading 0.1s ease 1.2s forwards,
+    typeWriter 1.5s forwards 1.2s,
+    hideLoading 0.3s ease 3s forwards;
+}
+
+.button-toggle:checked ~ .animated-btn-container .loading-text::after {
+  animation: blink 0.5s infinite 1.2s;
+}
+
+.button-toggle:checked ~ .animated-btn-container .finished-text {
+  animation: showFinished 0.3s ease 3s forwards;
+}
+
+/* Send Message Button Styles - REMOVED - Using new animated buttons */
+</style>
 </head>
 
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid px-4">
-      <a class="navbar-brand" href="#">
-        <img src="SrLogo.png" alt="Logo">
-        Shri Radhe
-      </a>
 
-      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<div class="video-background" id="videoBg">
+  <video autoplay loop muted playsinline>
+    <source src="motionbg.mp4" type="video/mp4">
+  </video>
+</div>
 
-      <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-        </ul>
+<!-- Sound Control Button -->
+<div class="sound-control" id="soundControl">
+  <i class="sound-icon fa-solid fa-volume-high"></i>
+</div>
+
+<!-- HOME -->
+<div class="container vh-100 d-flex align-items-center justify-content-center" id="home" style="transition: filter 0.5s ease; perspective: 90rem;">
+  <div class="row text-center w-100 justify-content-center">
+    <!-- Logo Section -->
+    <div class="col-12 mb-4">
+      <img src="ShriRadheLogo.png" alt="Company Logo" class="company-logo" />
+    </div>
+    
+    <!-- Company Name -->
+    <div class="col-12 mb-5">
+      <h1 class="company-name">Shri Radhe Creation</h1>
+    </div>
+    
+    <!-- Buttons Section -->
+    <div class="col-12">
+      <div class="button-wrapper">
+        <!-- Portfolio Button -->
+        <div class="mb-4">
+          <input id="button-toggle-portfolio" class="button-toggle" type="checkbox" />
+          <label class="animated-btn-container" for="button-toggle-portfolio" onclick="handlePortfolioClick(event)">
+            <div class="blur-background"></div>
+            <div class="background-border-shadow"></div>
+            <div class="background-border">
+              <div class="background-base"></div>
+              <div class="button-base-shadow">
+                <div class="status-text loading-text">
+                  <span style="font-size: 1.8rem; margin-right: 0.5rem;">💡</span>
+                  LIGHTS
+                </div>
+                <div class="status-text finished-text">
+                  <span style="font-size: 1.8rem; margin-right: 0.5rem;">📷</span>
+                  CAMERA
+                </div>
+              </div>
+              <div class="button-base-black reset-animation"></div>
+              <div class="main-button reset-animation">
+                <div class="button-text">PORTFOLIO</div>
+              </div>
+            </div>
+          </label>
+        </div>
+        
+        <!-- Services Button -->
+        <div>
+          <input id="button-toggle-services" class="button-toggle" type="checkbox" />
+          <label class="animated-btn-container" for="button-toggle-services">
+            <div class="blur-background"></div>
+            <div class="background-border-shadow"></div>
+            <div class="background-border">
+              <div class="background-base"></div>
+              <div class="button-base-shadow">
+                <div class="status-text loading-text">
+                  <span style="font-size: 1.8rem; margin-right: 0.5rem;">💡</span>
+                  LIGHTS
+                </div>
+                <div class="status-text finished-text">
+                  <span style="font-size: 1.8rem; margin-right: 0.5rem;">📷</span>
+                  CAMERA
+                </div>
+              </div>
+              <div class="button-base-black reset-animation"></div>
+              <div class="main-button reset-animation">
+                <div class="button-text">SERVICES</div>
+              </div>
+            </div>
+          </label>
+        </div>
       </div>
     </div>
-  </nav>
+  </div>
+</div>
 
-  <!-- MAIN HERO SECTION -->
-  <section class="hero-section">
-    <img src="ShriRadheLogo.png" alt="Main Logo" class="main-logo">
-    <div class="welcome-text">Welcome to the ShriRadhe Creation's</div>
+<!-- CAMERA + FLASH -->
+<div class="camera" id="camera">
+  <img src="SRP.PNG" alt="SRP Logo" />
+  <div class="action-text" id="actionText">
+    <span style="font-size: 2rem; margin-right: 0.5rem;">🎬</span>
+    ACTION
+  </div>
+</div>
+<div class="flash" id="flash"></div>
 
-    <!-- Shri Radhe Productions -->
-    <div class="text-center">
-      <button type="button" class="btn" onclick="window.location.href='Producitions.html'">
-        <strong>Shri Radhe Productions</strong>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-    </div>
+<!-- BACKGROUND MUSIC -->
+<audio id="backgroundMusic" src="fluet.mp3" loop preload="auto"></audio>
 
-    <!-- Shri Radhe Print on Demand -->
-    <div class="text-center">
-      <button type="button" class="btn">
-        <strong>Shri Radhe Print on Demand</strong>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-      <div class="coming-soon">Coming Soon</div>
-    </div>
+<!-- SOUND -->
+<audio id="clickSound" src="camera-click.mp3" preload="auto"></audio>
 
-    <!-- Shri Radhe Studio -->
-    <div class="text-center">
-      <button type="button" class="btn">
-        <strong>Shri Radhe Studio</strong>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-      <div class="coming-soon">Coming Soon</div>
-    </div>
+<script>
+// Sound control functionality
+const soundControl = document.getElementById('soundControl');
+const soundIcon = document.querySelector('.sound-icon');
+const videoBg = document.querySelector('.video-background video');
+const backgroundMusic = document.getElementById('backgroundMusic');
 
-    <!-- Shri Radhe Music -->
-    <div class="text-center">
-      <button type="button" class="btn">
-        <strong>Shri Radhe Music</strong>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-      <div class="coming-soon">Coming Soon</div>
-    </div>
+let isMuted = false;
 
-    <!-- Shri Radhe Merch -->
-    <div class="text-center">
-      <button type="button" class="btn">
-        <strong>Shri Radhe Merch</strong>
-        <div id="container-stars"><div id="stars"></div></div>
-        <div id="glow"><div class="circle"></div><div class="circle"></div></div>
-      </button>
-      <div class="coming-soon">Coming Soon</div>
-    </div>
-  </section>
+// Initialize background music
+window.addEventListener('load', function() {
+  // Set volume to a reasonable level
+  backgroundMusic.volume = 0.3;
+  
+  // Try to play the background music automatically
+  setTimeout(() => {
+    backgroundMusic.play().catch(e => {
+      console.log('Auto-play prevented:', e);
+      console.log('Attempting to play on first user interaction...');
+      
+      // Set up play on any user interaction if auto-play failed
+      const tryPlayOnInteraction = () => {
+        backgroundMusic.play().catch(e => console.log('Still blocked:', e));
+        // Remove event listeners after first interaction
+        document.removeEventListener('click', tryPlayOnInteraction);
+        document.removeEventListener('touchstart', tryPlayOnInteraction);
+        document.removeEventListener('keydown', tryPlayOnInteraction);
+      };
+      
+      // Add event listeners for various user interactions anywhere on the page
+      document.addEventListener('click', tryPlayOnInteraction);
+      document.addEventListener('touchstart', tryPlayOnInteraction);
+      document.addEventListener('keydown', tryPlayOnInteraction);
+    });
+  }, 100); // Small delay to ensure everything is loaded
+});
 
-  <footer>© 2025 Shri Radhe Creations | All rights reserved.</footer>
+soundControl.addEventListener('click', function() {
+  isMuted = !isMuted;
+  
+  if (isMuted) {
+    // Muted - disable video audio and background music
+    videoBg.muted = true;
+    backgroundMusic.muted = true;
+    soundControl.classList.add('muted');
+    soundIcon.className = 'sound-icon fa-solid fa-volume-xmark'; // Muted speaker icon
+  } else {
+    // Unmuted - enable video audio and background music
+    videoBg.muted = false;
+    backgroundMusic.muted = false;
+    soundControl.classList.remove('muted');
+    soundIcon.className = 'sound-icon fa-solid fa-volume-high'; // Unmuted speaker icon
+  }
+});
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+// Also allow toggling mute state with keyboard (spacebar or m key)
+document.addEventListener('keydown', function(event) {
+  if ((event.code === 'Space' || event.code === 'KeyM') && event.target.tagName !== 'INPUT') {
+    event.preventDefault();
+    soundControl.click(); // Trigger the same behavior as clicking the sound button
+  }
+});
+
+// Reset animation state when page loads
+window.addEventListener('load', function() {
+  const camera = document.getElementById('camera');
+  const flash = document.getElementById('flash');
+  const videoBg = document.getElementById('videoBg');
+  const home = document.getElementById('home');
+  
+  // Remove any stuck animations and blur
+  camera.classList.remove('active');
+  flash.classList.remove('active');
+  videoBg.classList.remove('blur');
+  home.style.filter = 'none';
+  
+  // Reset button checkboxes to prevent auto-animation on refresh
+  const portfolioCheckbox = document.getElementById('button-toggle-portfolio');
+  const servicesCheckbox = document.getElementById('button-toggle-services');
+  if (portfolioCheckbox) portfolioCheckbox.checked = false;
+  if (servicesCheckbox) servicesCheckbox.checked = false;
+});
+
+// Also reset when user navigates back to the page
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted) {
+    // Page was loaded from cache (back/forward button)
+    const camera = document.getElementById('camera');
+    const flash = document.getElementById('flash');
+    const videoBg = document.getElementById('videoBg');
+    const home = document.getElementById('home');
+    
+    camera.classList.remove('active');
+    flash.classList.remove('active');
+    videoBg.classList.remove('blur');
+    home.style.filter = 'none';
+    
+    // Reset button checkboxes
+    const portfolioCheckbox = document.getElementById('button-toggle-portfolio');
+    const servicesCheckbox = document.getElementById('button-toggle-services');
+    if (portfolioCheckbox) portfolioCheckbox.checked = false;
+    if (servicesCheckbox) servicesCheckbox.checked = false;
+  }
+});
+
+function handlePortfolioClick(event) {
+  // Prevent default label behavior
+  const checkbox = document.getElementById('button-toggle-portfolio');
+  
+  // If already checked, don't do anything (animation in progress)
+  if (checkbox.checked) {
+    return;
+  }
+  
+  // Wait for the button animation sequence to complete (now faster)
+  // Button opens at 0.6s, loads for 1.8s, closes at 3.5s, completes at 4.5s
+  setTimeout(() =>{
+    triggerPortfolioAnimation();
+  }, 4600); // Trigger camera after button animation completes
+}
+
+function triggerPortfolioAnimation() {
+  openPortfolio();
+}
+
+function openPortfolio() {
+  const camera = document.getElementById('camera');
+  const flash = document.getElementById('flash');
+  const sound = document.getElementById('clickSound');
+  const videoBg = document.getElementById('videoBg');
+  const home = document.getElementById('home');
+
+  // Add blur effect to background
+  videoBg.classList.add('blur');
+  home.style.filter = 'blur(10px)';
+  
+  camera.classList.add('active');
+
+  // shutter sound + flash
+  setTimeout(() => {
+    sound.currentTime = 0;
+    sound.play();
+    flash.classList.add('active');
+  }, 1000);
+
+  // REDIRECT TO PORTFOLIO PAGE
+  setTimeout(() => {
+    window.location.href = "Productions.html";
+  }, 1400);
+}
+</script>
+
 </body>
 </html>
-
