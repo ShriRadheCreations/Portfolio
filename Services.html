@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services | Premium Portfolio</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0c0c0c 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        /* Animated background elements */
+        .background-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 20s infinite linear;
+        }
+
+        .bg-element:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-duration: 25s;
+        }
+
+        .bg-element:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 70%;
+            left: 80%;
+            animation-duration: 30s;
+        }
+
+        .bg-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            left: 60%;
+            animation-duration: 35s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, 30px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, 60px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 30px) rotate(270deg);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-top: 40px;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffffff, #b0b0b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .header p {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            color: #b0b0b0;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+            letter-spacing: 1px;
+        }
+
+        .pdf-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                0 0 80px rgba(255, 255, 255, 0.15),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            height: 75vh;
+            transition: all 0.5s ease;
+        }
+
+        .pdf-container::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
+            background-size: 400% 400%;
+            z-index: -1;
+            animation: gradient 15s ease infinite;
+            filter: blur(25px);
+            opacity: 0.2;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 24px; /* Slightly less than container for visual effect */
+        }
+
+        .download-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 
+                0 12px 25px rgba(255, 107, 107, 0.4),
+                0 0 35px rgba(255, 107, 107, 0.25);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            transform: translateY(0);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 18px 35px rgba(255, 107, 107, 0.5),
+                0 0 45px rgba(255, 107, 107, 0.35);
+        }
+
+        .download-btn:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .download-btn i {
+            font-size: 18px;
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: #b0b0b0;
+            font-size: 18px;
+            gap: 25px;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top: 6px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 50px 20px 30px;
+            color: #666;
+            font-size: 15px;
+            margin-top: 40px;
+        }
+
+        .footer p {
+            margin: 8px 0;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Parallax effect on scroll */
+        .parallax-element {
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .pdf-container {
+                height: 70vh;
+                margin: 0 10px 40px;
+                border-radius: 20px;
+            }
+            
+            .download-btn {
+                top: 20px;
+                right: 20px;
+                padding: 14px 22px;
+                font-size: 14px;
+            }
+            
+            .header {
+                padding-top: 20px;
+                margin-bottom: 40px;
+            }
+            
+            .bg-element {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pdf-container {
+                height: 65vh;
+            }
+            
+            .download-btn {
+                top: 15px;
+                right: 15px;
+                padding: 12px 18px;
+                font-size: 13px;
+            }
+            
+            .download-btn span {
+                display: none;
+            }
+            
+            .download-btn i {
+                margin: 0;
+                font-size: 20px;
+            }
+        }
+        
+        /* Extra small devices */
+        @media only screen and (max-width: 600px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Landscape phones */
+        @media only screen and (max-height: 600px) {
+            .pdf-container {
+                height: 60vh;
+            }
+        }
+
+        /* Smooth page load animation */
+        body.preload * {
+            transition: none !important;
+            animation: none !important;
+        }
+        
+        body {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Animation for PDF container */
+        .pdf-container {
+            animation: containerAppear 0.8s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+        
+        @keyframes containerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="preload">
+    <div class="background-elements">
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Our Services</h1>
+            <p>Explore our comprehensive range of professional services designed to bring your vision to life with premium quality and attention to detail.</p>
+        </div>
+
+        <div class="pdf-container">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <span>Loading Services Brochure...</span>
+            </div>
+            <iframe 
+                class="pdf-viewer" 
+                id="pdfViewer"
+                src="https://drive.google.com/file/d/1NCEq3pko3caNITGmUZvL3a8OLzdHzwyP/preview" 
+                title="Services PDF Viewer"
+                style="opacity: 0; transition: opacity 0.5s ease;">
+            </iframe>
+        </div>
+
+        <button class="download-btn" id="downloadBtn">
+            <i class="fas fa-download"></i>
+            <span>Download Brochure</span>
+        </button>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Shri Radhe Creation. All rights reserved.</p>
+        <p>Premium Photography & Video Production Services</p>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+    <script>
+        // Remove preload class to trigger smooth page load animation
+        window.addEventListener('load', function() {
+            document.body.classList.remove('preload');
+        });
+
+        // Handle PDF loading
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const loadingDiv = document.getElementById('loading');
+            
+            // Show loading initially
+            loadingDiv.style.display = 'flex';
+            
+            // Handle iframe load event
+            pdfViewer.onload = function() {
+                // Fade in the PDF viewer after a short delay
+                setTimeout(() => {
+                    pdfViewer.style.opacity = 1;
+                    loadingDiv.classList.add('hidden');
+                }, 1500);
+            };
+            
+            // Handle error in case iframe fails to load
+            pdfViewer.onerror = function() {
+                loadingDiv.innerHTML = '<p>Failed to load PDF. Please check your connection.</p>';
+            };
+        });
+
+        // Download PDF function using Google Drive direct download link
+        function downloadPDF() {
+            // Using the Google Drive direct download link
+            const downloadUrl = 'https://drive.google.com/uc?export=download&id=1NCEq3pko3caNITGmUZvL3a8OLzdHzwyP';
+            
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = 'ShriRadheProductionServices.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Visual feedback for the user
+            const btn = document.getElementById('downloadBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> <span>Downloading...</span>';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        // Add download button event listener
+        document.getElementById('downloadBtn').addEventListener('click', downloadPDF);
+        
+        // Parallax effect on scroll
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax-element');
+            
+            parallaxElements.forEach(function(element) {
+                const speed = parseFloat(element.getAttribute('data-speed')) || 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
